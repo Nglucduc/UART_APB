@@ -338,178 +338,178 @@ module test_bench;
         pwrite  = 0;
         penable = 0;
 
-// // APB_SLAVE
-//         $display("<<<===================================================>>>");
-//         $display("<<<----------------- APB_SLAVE ----------------------->>>");
+// APB_SLAVE
+        $display("<<<===================================================>>>");
+        $display("<<<----------------- APB_SLAVE ----------------------->>>");
 
-//         reset();
-//         $display("-------------------- APB Write --------------------------");
-//         apb_chk(1'b0, 1'b1, 1'b0, 1'b0);
-//         apb_chk(1'b0, 1'b1, 1'b1, 1'b0);
-//         apb_chk(1'b1, 1'b1, 1'b0, 1'b0);
-//         apb_chk(1'b1, 1'b1, 1'b1, 1'b1);    // Write valid
+        reset();
+        $display("-------------------- APB Write --------------------------");
+        apb_chk(1'b0, 1'b1, 1'b0, 1'b0);
+        apb_chk(1'b0, 1'b1, 1'b1, 1'b0);
+        apb_chk(1'b1, 1'b1, 1'b0, 1'b0);
+        apb_chk(1'b1, 1'b1, 1'b1, 1'b1);    // Write valid
 
-//         $display("-------------------- APB Read ---------------------------");
-//         apb_chk(1'b0, 1'b0, 1'b0, 1'b0);
-//         apb_chk(1'b0, 1'b0, 1'b1, 1'b0);
-//         apb_chk(1'b1, 1'b0, 1'b0, 1'b0);
-//         apb_chk(1'b1, 1'b0, 1'b1, 1'b1);    // Read valid
+        $display("-------------------- APB Read ---------------------------");
+        apb_chk(1'b0, 1'b0, 1'b0, 1'b0);
+        apb_chk(1'b0, 1'b0, 1'b1, 1'b0);
+        apb_chk(1'b1, 1'b0, 1'b0, 1'b0);
+        apb_chk(1'b1, 1'b0, 1'b1, 1'b1);    // Read valid
 
-//         $display("-------------------- Back to Back Write -----------------");
-//         repeat (3) begin
-//             apb_chk(1'b1, 1'b1, 1'b1, 1'b1);
-//         end
+        $display("-------------------- Back to Back Write -----------------");
+        repeat (3) begin
+            apb_chk(1'b1, 1'b1, 1'b1, 1'b1);
+        end
 
-//         $display("-------------------- Alternating Write-Read -------------");
-//         repeat (3) begin
-//             apb_chk(1'b1, 1'b1, 1'b1, 1'b1);
-//             apb_chk(1'b1, 1'b0, 1'b1, 1'b1);
-//         end
+        $display("-------------------- Alternating Write-Read -------------");
+        repeat (3) begin
+            apb_chk(1'b1, 1'b1, 1'b1, 1'b1);
+            apb_chk(1'b1, 1'b0, 1'b1, 1'b1);
+        end
 
-//         $display("-------------------- Reset During Transaction -----------");
-//         @(posedge sys_clk);
-//         psel        = 1'b1;
-//         pwrite      = 1'b1;
-//         penable     = 1'b0;
-//         @(posedge sys_clk);
-//         penable     = 1'b1;
-//         @(posedge sys_clk);
-//         sys_rst_n   = 1'b0;         // Reset signal
-//         @(posedge sys_clk);
-//         #2;
-//         if (pready !== 1'b0) begin
-//             $display("[%0t] FAILED - Pready: exp = %b, act = %b", $time, 1'b0, pready);
-//             error_count = error_count + 1;
-//         end else begin
-//             $display("[%0t] PASS - Pready: Value = %b", $time, pready);
-//         end
-//         test_count = test_count + 1;
+        $display("-------------------- Reset During Transaction -----------");
+        @(posedge sys_clk);
+        psel        = 1'b1;
+        pwrite      = 1'b1;
+        penable     = 1'b0;
+        @(posedge sys_clk);
+        penable     = 1'b1;
+        @(posedge sys_clk);
+        sys_rst_n   = 1'b0;         // Reset signal
+        @(posedge sys_clk);
+        #2;
+        if (pready !== 1'b0) begin
+            $display("[%0t] FAILED - Pready: exp = %b, act = %b", $time, 1'b0, pready);
+            error_count = error_count + 1;
+        end else begin
+            $display("[%0t] PASS - Pready: Value = %b", $time, pready);
+        end
+        test_count = test_count + 1;
 
-//         $display("---------- Hold PSEL HIGH for Multiple Cycles ----------");
-//         reset();
-//         // Check the transaction of write signal when change the input pwrite.
-//         @(posedge sys_clk);
-//         psel    = 1'b1;
-//         pwrite  = 1'b1;
-//         penable = 1'b0;
-//         @(posedge sys_clk);
-//         penable = 1'b1;
-//         @(posedge sys_clk);
-//         pwrite  = 1'b0;
-//         #2;
-//         if (uut.wr_en !== 1'b1) begin
-//             $display("[%0t] FAILED - Pwrite: exp = %b, act = %b", $time, 1'b1, uut.wr_en);
-//             error_count = error_count + 1;
-//         end else begin
-//             $display("[%0t] PASS - Pwrite = %b", $time, uut.wr_en);
-//         end
-//         test_count = test_count + 1;
-//         if (pready !== 1'b1) begin
-//             $display("[%0t] FAILED - Pready: exp = %b, act = %b", $time, 1'b1, pready);
-//             error_count = error_count + 1;
-//         end else begin
-//             $display("[%0t] PASS - Pready = %b", $time, pready);
-//         end
-//         test_count = test_count + 1;
-//         @(posedge sys_clk);
-//         pwrite  = 1'b1;
-//         #2;
-//         if (uut.rd_en !== 1'b1) begin
-//             $display("[%0t] FAILED - Pread: exp = %b, act = %b", $time, 1'b1, uut.rd_en);
-//             error_count = error_count + 1;
-//         end else begin
-//             $display("[%0t] PASS - Pread = %b", $time, uut.rd_en);
-//         end
-//         test_count = test_count + 1;
-//         if (pready !== 1'b1) begin
-//             $display("[%0t] FAILED - Pready: exp = %b, act = %b", $time, 1'b1, pready);
-//             error_count = error_count + 1;
-//         end else begin
-//             $display("[%0t] PASS - Pready = %b", $time, pready);
-//         end
-//         test_count = test_count + 1;
-//         @(posedge sys_clk);
-//         #2;
-//         if (uut.wr_en !== 1'b1) begin
-//             $display("[%0t] FAILED - Pwrite: exp = %b, act = %b", $time, 1'b1, uut.wr_en);
-//             error_count = error_count + 1;
-//         end else begin
-//             $display("[%0t] PASS - Pwrite = %b", $time, uut.wr_en);
-//         end
-//         test_count = test_count + 1;
-//         if (pready !== 1'b1) begin
-//             $display("[%0t] FAILED - Pready: exp = %b, act = %b", $time, 1'b1, pready);
-//             error_count = error_count + 1;
-//         end else begin
-//             $display("[%0t] PASS - Pready = %b", $time, pready);
-//         end
-//         test_count = test_count + 1;
+        $display("---------- Hold PSEL HIGH for Multiple Cycles ----------");
+        reset();
+        // Check the transaction of write signal when change the input pwrite.
+        @(posedge sys_clk);
+        psel    = 1'b1;
+        pwrite  = 1'b1;
+        penable = 1'b0;
+        @(posedge sys_clk);
+        penable = 1'b1;
+        @(posedge sys_clk);
+        pwrite  = 1'b0;
+        #2;
+        if (uut.wr_en !== 1'b1) begin
+            $display("[%0t] FAILED - Pwrite: exp = %b, act = %b", $time, 1'b1, uut.wr_en);
+            error_count = error_count + 1;
+        end else begin
+            $display("[%0t] PASS - Pwrite = %b", $time, uut.wr_en);
+        end
+        test_count = test_count + 1;
+        if (pready !== 1'b1) begin
+            $display("[%0t] FAILED - Pready: exp = %b, act = %b", $time, 1'b1, pready);
+            error_count = error_count + 1;
+        end else begin
+            $display("[%0t] PASS - Pready = %b", $time, pready);
+        end
+        test_count = test_count + 1;
+        @(posedge sys_clk);
+        pwrite  = 1'b1;
+        #2;
+        if (uut.rd_en !== 1'b1) begin
+            $display("[%0t] FAILED - Pread: exp = %b, act = %b", $time, 1'b1, uut.rd_en);
+            error_count = error_count + 1;
+        end else begin
+            $display("[%0t] PASS - Pread = %b", $time, uut.rd_en);
+        end
+        test_count = test_count + 1;
+        if (pready !== 1'b1) begin
+            $display("[%0t] FAILED - Pready: exp = %b, act = %b", $time, 1'b1, pready);
+            error_count = error_count + 1;
+        end else begin
+            $display("[%0t] PASS - Pready = %b", $time, pready);
+        end
+        test_count = test_count + 1;
+        @(posedge sys_clk);
+        #2;
+        if (uut.wr_en !== 1'b1) begin
+            $display("[%0t] FAILED - Pwrite: exp = %b, act = %b", $time, 1'b1, uut.wr_en);
+            error_count = error_count + 1;
+        end else begin
+            $display("[%0t] PASS - Pwrite = %b", $time, uut.wr_en);
+        end
+        test_count = test_count + 1;
+        if (pready !== 1'b1) begin
+            $display("[%0t] FAILED - Pready: exp = %b, act = %b", $time, 1'b1, pready);
+            error_count = error_count + 1;
+        end else begin
+            $display("[%0t] PASS - Pready = %b", $time, pready);
+        end
+        test_count = test_count + 1;
 
-// // REGISTER
-//         $display("<<<===================================================>>>");
-//         $display("<<<----------------- REGISTER ------------------------>>>");
+// REGISTER
+        $display("<<<===================================================>>>");
+        $display("<<<----------------- REGISTER ------------------------>>>");
         
-//         $display("-------------------- RESET VALUE ------------------------");
-//         reset();
-//         apb_rd(DATA_TX, 16'h00);
-//         apb_rd(DATA_RX, 16'h00);
-//         apb_rd(STATE, 16'h0C);
-//         apb_rd(CONTROL, 16'h00);
-//         apb_rd(BAUDDIV, 16'h00);
-//         apb_rd(IER, 16'h00);
-//         apb_rd(ISR, 16'h00);
+        $display("-------------------- RESET VALUE ------------------------");
+        reset();
+        apb_rd(DATA_TX, 16'h00);
+        apb_rd(DATA_RX, 16'h00);
+        apb_rd(STATE, 16'h0C);
+        apb_rd(CONTROL, 16'h00);
+        apb_rd(BAUDDIV, 16'h00);
+        apb_rd(IER, 16'h00);
+        apb_rd(ISR, 16'h00);
 
-//         $display("-------------------- DATA_TX ----------------------------");
-//         $display("----- Check all change of pstrobe -----");
-//         reset();
-//         reg_wr_rd(4'b0000, DATA_TX, 16'h0000, 16'h0000);
-//         reg_wr_rd(4'b0000, DATA_TX, 16'h5555, 16'h0000);
-//         reg_wr_rd(4'b0000, DATA_TX, 16'hAAAA, 16'h0000);
-//         reg_wr_rd(4'b0000, DATA_TX, 16'hFFFF, 16'h0000);
+        $display("-------------------- DATA_TX ----------------------------");
+        $display("----- Check all change of pstrobe -----");
+        reset();
+        reg_wr_rd(4'b0000, DATA_TX, 16'h0000, 16'h0000);
+        reg_wr_rd(4'b0000, DATA_TX, 16'h5555, 16'h0000);
+        reg_wr_rd(4'b0000, DATA_TX, 16'hAAAA, 16'h0000);
+        reg_wr_rd(4'b0000, DATA_TX, 16'hFFFF, 16'h0000);
 
-//         reg_wr_rd(4'b0001, DATA_TX, 16'h0000, 16'h0000);
-//         reg_wr_rd(4'b0001, DATA_TX, 16'h5555, 16'h0055);
-//         reg_wr_rd(4'b0001, DATA_TX, 16'hAAAA, 16'h00AA);
-//         reg_wr_rd(4'b0001, DATA_TX, 16'hFFFF, 16'h00FF);
+        reg_wr_rd(4'b0001, DATA_TX, 16'h0000, 16'h0000);
+        reg_wr_rd(4'b0001, DATA_TX, 16'h5555, 16'h0055);
+        reg_wr_rd(4'b0001, DATA_TX, 16'hAAAA, 16'h00AA);
+        reg_wr_rd(4'b0001, DATA_TX, 16'hFFFF, 16'h00FF);
 
-//         reg_wr_rd(4'b0010, DATA_TX, 16'h0000, 16'h00FF);
-//         reg_wr_rd(4'b0010, DATA_TX, 16'h5555, 16'h00FF);
-//         reg_wr_rd(4'b0010, DATA_TX, 16'hAAAA, 16'h00FF);
-//         reg_wr_rd(4'b0010, DATA_TX, 16'hFFFF, 16'h00FF);
+        reg_wr_rd(4'b0010, DATA_TX, 16'h0000, 16'h00FF);
+        reg_wr_rd(4'b0010, DATA_TX, 16'h5555, 16'h00FF);
+        reg_wr_rd(4'b0010, DATA_TX, 16'hAAAA, 16'h00FF);
+        reg_wr_rd(4'b0010, DATA_TX, 16'hFFFF, 16'h00FF);
 
-//         reg_wr_rd(4'b0100, DATA_TX, 16'h0000, 16'h00FF);
-//         reg_wr_rd(4'b0100, DATA_TX, 16'h5555, 16'h00FF);
-//         reg_wr_rd(4'b0100, DATA_TX, 16'hAAAA, 16'h00FF);
-//         reg_wr_rd(4'b0100, DATA_TX, 16'hFFFF, 16'h00FF);
+        reg_wr_rd(4'b0100, DATA_TX, 16'h0000, 16'h00FF);
+        reg_wr_rd(4'b0100, DATA_TX, 16'h5555, 16'h00FF);
+        reg_wr_rd(4'b0100, DATA_TX, 16'hAAAA, 16'h00FF);
+        reg_wr_rd(4'b0100, DATA_TX, 16'hFFFF, 16'h00FF);
 
-//         reg_wr_rd(4'b1000, DATA_TX, 16'h0000, 16'h00FF);
-//         reg_wr_rd(4'b1000, DATA_TX, 16'h5555, 16'h00FF);
-//         reg_wr_rd(4'b1000, DATA_TX, 16'hAAAA, 16'h00FF);
-//         reg_wr_rd(4'b1000, DATA_TX, 16'hFFFF, 16'h00FF);
+        reg_wr_rd(4'b1000, DATA_TX, 16'h0000, 16'h00FF);
+        reg_wr_rd(4'b1000, DATA_TX, 16'h5555, 16'h00FF);
+        reg_wr_rd(4'b1000, DATA_TX, 16'hAAAA, 16'h00FF);
+        reg_wr_rd(4'b1000, DATA_TX, 16'hFFFF, 16'h00FF);
 
-//         $display("-------------------- BAUDRATE ---------------------------");
-//         reset();
-//         reg_wr_rd(4'hF, BAUDDIV, BAUD_9600, BAUD_9600);
-//         reg_wr_rd(4'hF, BAUDDIV, BAUD_19200, BAUD_19200);
-//         reg_wr_rd(4'hF, BAUDDIV, BAUD_38400, BAUD_38400);
-//         reg_wr_rd(4'hF, BAUDDIV, BAUD_115200, BAUD_115200);
-//         reg_wr_rd(4'hF, BAUDDIV, BAUD_3125000, BAUD_3125000);
+        $display("-------------------- BAUDRATE ---------------------------");
+        reset();
+        reg_wr_rd(4'hF, BAUDDIV, BAUD_9600, BAUD_9600);
+        reg_wr_rd(4'hF, BAUDDIV, BAUD_19200, BAUD_19200);
+        reg_wr_rd(4'hF, BAUDDIV, BAUD_38400, BAUD_38400);
+        reg_wr_rd(4'hF, BAUDDIV, BAUD_115200, BAUD_115200);
+        reg_wr_rd(4'hF, BAUDDIV, BAUD_3125000, BAUD_3125000);
 
-//         $display("-------------------- IER --------------------------------");
-//         reset();
-//         reg_wr_rd(4'hF, IER, 16'h0000, 16'h0000);
-//         reg_wr_rd(4'hF, IER, 16'h0001, 16'h0001);
+        $display("-------------------- IER --------------------------------");
+        reset();
+        reg_wr_rd(4'hF, IER, 16'h0000, 16'h0000);
+        reg_wr_rd(4'hF, IER, 16'h0001, 16'h0001);
 
-// // BAUDRATE
-//         $display("<<<===================================================>>>");
-//         $display("<<<----------------- BAUDRATE ------------------------>>>");
-//         reset();
-//         baud_chk(BAUD_9600, 9600);
-//         baud_chk(BAUD_19200, 19200);
-//         baud_chk(BAUD_38400, 38400);
-//         baud_chk(BAUD_115200, 115200);
-//         baud_chk(BAUD_460800, 460800);
-//         baud_chk(BAUD_3125000, 3125000);
+// BAUDRATE
+        $display("<<<===================================================>>>");
+        $display("<<<----------------- BAUDRATE ------------------------>>>");
+        reset();
+        baud_chk(BAUD_9600, 9600);
+        baud_chk(BAUD_19200, 19200);
+        baud_chk(BAUD_38400, 38400);
+        baud_chk(BAUD_115200, 115200);
+        baud_chk(BAUD_460800, 460800);
+        baud_chk(BAUD_3125000, 3125000);
 
 // INTERRUPT
         $display("<<<===================================================>>>");
@@ -544,210 +544,210 @@ module test_bench;
         apb_wr(4'hF, IER, 16'h0000);
         int_chk(1'b0);
 
-// // TRANSMITTER
-//         $display("<<<===================================================>>>");
-//         $display("<<<----------------- TRANSMITTER --------------------->>>");
-//         reset();
-//         @(posedge sys_clk);
-//         $display("---------- Test with no parity ----------");   
-//         $display("---------- Set Baudrate ----------");     
-//         apb_wr(4'hF, BAUDDIV, BAUD_115200);               
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h003C);    // Test data
-//             tx_chk(8'h3C, 0, 0);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00A7);    // Test data
-//             tx_chk(8'hA7, 0, 0);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0019);    // Test data
-//             tx_chk(8'h19, 0, 0);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00D2);    // Test data
-//             tx_chk(8'hD2, 0, 0);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00A5);    // Alternating pattern
-//             tx_chk(8'hA5, 0, 0);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0055);    // 01010101
-//             tx_chk(8'h55, 0, 0);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00AA);    // 10101010
-//             tx_chk(8'hAA, 0, 0);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00FF);    // All ones
-//             tx_chk(8'hFF, 0, 0);
+// TRANSMITTER
+        $display("<<<===================================================>>>");
+        $display("<<<----------------- TRANSMITTER --------------------->>>");
+        reset();
+        @(posedge sys_clk);
+        $display("---------- Test with no parity ----------");   
+        $display("---------- Set Baudrate ----------");     
+        apb_wr(4'hF, BAUDDIV, BAUD_115200);               
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h003C);    // Test data
+            tx_chk(8'h3C, 0, 0);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00A7);    // Test data
+            tx_chk(8'hA7, 0, 0);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0019);    // Test data
+            tx_chk(8'h19, 0, 0);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00D2);    // Test data
+            tx_chk(8'hD2, 0, 0);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00A5);    // Alternating pattern
+            tx_chk(8'hA5, 0, 0);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0055);    // 01010101
+            tx_chk(8'h55, 0, 0);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00AA);    // 10101010
+            tx_chk(8'hAA, 0, 0);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00FF);    // All ones
+            tx_chk(8'hFF, 0, 0);
 
-//         $display("---------- Test with odd parity ----------");
-//         reset();
-//         $display("---------- Set Baudrate ----------");
-//         apb_wr(4'hF, BAUDDIV, BAUD_115200);
-//         $display("---------- Enable parity ----------");
-//         apb_wr(4'hF, CONTROL, 16'h0004);    // Enable odd parity
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h003C);    // Test data
-//             tx_chk(8'h3C, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00A7);    // Test data
-//             tx_chk(8'hA7, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0019);    // Test data
-//             tx_chk(8'h19, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00D2);    // Test data
-//             tx_chk(8'hD2, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0000);    // All zeros
-//             tx_chk(8'h00, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00FF);    // All ones
-//             tx_chk(8'hFF, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0055);    // Alternating 0-1
-//             tx_chk(8'h55, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00AA);    // Alternating 1-0
-//             tx_chk(8'hAA, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0080);    // Single 1
-//             tx_chk(8'h80, 1, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h007F);    // Single 0
-//             tx_chk(8'h7F, 1, 1);
+        $display("---------- Test with odd parity ----------");
+        reset();
+        $display("---------- Set Baudrate ----------");
+        apb_wr(4'hF, BAUDDIV, BAUD_115200);
+        $display("---------- Enable parity ----------");
+        apb_wr(4'hF, CONTROL, 16'h0004);    // Enable odd parity
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h003C);    // Test data
+            tx_chk(8'h3C, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00A7);    // Test data
+            tx_chk(8'hA7, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0019);    // Test data
+            tx_chk(8'h19, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00D2);    // Test data
+            tx_chk(8'hD2, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0000);    // All zeros
+            tx_chk(8'h00, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00FF);    // All ones
+            tx_chk(8'hFF, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0055);    // Alternating 0-1
+            tx_chk(8'h55, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00AA);    // Alternating 1-0
+            tx_chk(8'hAA, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0080);    // Single 1
+            tx_chk(8'h80, 1, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h007F);    // Single 0
+            tx_chk(8'h7F, 1, 1);
 
-//         $display("---------- Test with even parity ----------");
-//         reset();
-//         $display("---------- Set Baudrate ----------");
-//         apb_wr(4'hF, BAUDDIV, BAUD_115200);
-//         $display("---------- Enable parity ----------");
-//         apb_wr(4'hF, CONTROL, 16'h000C);    // Enable even parity
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h003C);    // Test data
-//             tx_chk(8'h3C, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00A7);    // Test data
-//             tx_chk(8'hA7, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0019);    // Test data
-//             tx_chk(8'h19, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00D2);    // Test data
-//             tx_chk(8'hD2, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0000);    // All zeros
-//             tx_chk(8'h00, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00FF);    // All ones
-//             tx_chk(8'hFF, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0055);    // Alternating 0-1
-//             tx_chk(8'h55, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h00AA);    // Alternating 1-0
-//             tx_chk(8'hAA, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0080);    // Single 1
-//             tx_chk(8'h80, 0, 1);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h007F);    // Single 0
-//             tx_chk(8'h7F, 0, 1);
+        $display("---------- Test with even parity ----------");
+        reset();
+        $display("---------- Set Baudrate ----------");
+        apb_wr(4'hF, BAUDDIV, BAUD_115200);
+        $display("---------- Enable parity ----------");
+        apb_wr(4'hF, CONTROL, 16'h000C);    // Enable even parity
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h003C);    // Test data
+            tx_chk(8'h3C, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00A7);    // Test data
+            tx_chk(8'hA7, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0019);    // Test data
+            tx_chk(8'h19, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00D2);    // Test data
+            tx_chk(8'hD2, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0000);    // All zeros
+            tx_chk(8'h00, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00FF);    // All ones
+            tx_chk(8'hFF, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0055);    // Alternating 0-1
+            tx_chk(8'h55, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h00AA);    // Alternating 1-0
+            tx_chk(8'hAA, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0080);    // Single 1
+            tx_chk(8'h80, 0, 1);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h007F);    // Single 0
+            tx_chk(8'h7F, 0, 1);
             
-//         $display("---------- Test FIFO full condition ----------");
-//         reset();
-//         $display("---------- Set Baudrate ----------");
-//         apb_wr(4'hF, BAUDDIV, BAUD_19200);
-//         @(posedge sys_clk);
-//             send_data_to_FIFO(16'h0037);    // Fill FIFO
-//             tx_chk(8'h37, 0, 0);
-//             send_data_to_FIFO(16'h005A);
-//             tx_chk(8'h5A, 0, 0);
-//             send_data_to_FIFO(16'h0074);
-//             tx_chk(8'h74, 0, 0);
-//             send_data_to_FIFO(16'h00FF);
-//             tx_chk(8'hFF, 0, 0);
+        $display("---------- Test FIFO full condition ----------");
+        reset();
+        $display("---------- Set Baudrate ----------");
+        apb_wr(4'hF, BAUDDIV, BAUD_19200);
+        @(posedge sys_clk);
+            send_data_to_FIFO(16'h0037);    // Fill FIFO
+            tx_chk(8'h37, 0, 0);
+            send_data_to_FIFO(16'h005A);
+            tx_chk(8'h5A, 0, 0);
+            send_data_to_FIFO(16'h0074);
+            tx_chk(8'h74, 0, 0);
+            send_data_to_FIFO(16'h00FF);
+            tx_chk(8'hFF, 0, 0);
 
-// // RECEIVER
-//         $display("<<<===================================================>>>");
-//         $display("<<<----------------- RECEIVER ------------------------>>>");
+// RECEIVER
+        $display("<<<===================================================>>>");
+        $display("<<<----------------- RECEIVER ------------------------>>>");
         
-//         $display("------------- Receive data with no parity ---------------");
-//         $display("----- Alternating Write-Read in Receive_FIFO -----");
-//         reset();
-//         apb_wr(4'hF, BAUDDIV, BAUD_115200);
-//         receive_rx(0, 1'b0, 8'h00);
-//         read_data_rx(2'b00, 16'h0000);
-//         receive_rx(0, 1'b0, 8'h55);
-//         read_data_rx(2'b00, 16'h0055);
-//         receive_rx(0, 1'b0, 8'hAA);
-//         read_data_rx(2'b00, 16'h00AA);
-//         receive_rx(0, 1'b0, 8'hFF);
-//         read_data_rx(2'b00, 16'h00FF);
-//         receive_rx(0, 1'b0, 8'h74);
-//         read_data_rx(2'b00, 16'h0074);
-//         receive_rx(0, 1'b0, 8'hAF);
-//         read_data_rx(2'b00, 16'h00AF);
-//         $display("----- Check write FULL data in FIFO -----");
-//         reset();
-//         apb_wr(4'hF, BAUDDIV, BAUD_19200);
-//         receive_rx(0, 1'b0, 8'h37);
-//         receive_rx(0, 1'b0, 8'h5A);
-//         receive_rx(0, 1'b0, 8'h74);
-//         receive_rx(0, 1'b0, 8'hFF);
-//         read_data_rx(2'b00, 16'h0037);
-//         read_data_rx(2'b00, 16'h005A);
-//         read_data_rx(2'b00, 16'h0074);
-//         read_data_rx(2'b00, 16'h00FF);
+        $display("------------- Receive data with no parity ---------------");
+        $display("----- Alternating Write-Read in Receive_FIFO -----");
+        reset();
+        apb_wr(4'hF, BAUDDIV, BAUD_115200);
+        receive_rx(0, 1'b0, 8'h00);
+        read_data_rx(2'b00, 16'h0000);
+        receive_rx(0, 1'b0, 8'h55);
+        read_data_rx(2'b00, 16'h0055);
+        receive_rx(0, 1'b0, 8'hAA);
+        read_data_rx(2'b00, 16'h00AA);
+        receive_rx(0, 1'b0, 8'hFF);
+        read_data_rx(2'b00, 16'h00FF);
+        receive_rx(0, 1'b0, 8'h74);
+        read_data_rx(2'b00, 16'h0074);
+        receive_rx(0, 1'b0, 8'hAF);
+        read_data_rx(2'b00, 16'h00AF);
+        $display("----- Check write FULL data in FIFO -----");
+        reset();
+        apb_wr(4'hF, BAUDDIV, BAUD_19200);
+        receive_rx(0, 1'b0, 8'h37);
+        receive_rx(0, 1'b0, 8'h5A);
+        receive_rx(0, 1'b0, 8'h74);
+        receive_rx(0, 1'b0, 8'hFF);
+        read_data_rx(2'b00, 16'h0037);
+        read_data_rx(2'b00, 16'h005A);
+        read_data_rx(2'b00, 16'h0074);
+        read_data_rx(2'b00, 16'h00FF);
         
-//         $display("------------- Receive data with Odd parity --------------");
-//         $display("----- Alternating Write-Read in Receive_FIFO -----");
-//         reset();
-//         apb_wr(4'hF, BAUDDIV, BAUD_115200);
-//         apb_wr(4'hF, CONTROL, 16'h0004);
-//         receive_rx(1, 1'b1, 8'h3C);
-//         read_data_rx(2'b01, 16'h003C);
-//         receive_rx(1, 1'b0, 8'hA7);
-//         read_data_rx(2'b01, 16'h00A7);
-//         receive_rx(1, 1'b0, 8'h19);
-//         read_data_rx(2'b01, 16'h0019);
-//         receive_rx(1, 1'b1, 8'hD2);
-//         read_data_rx(2'b01, 16'h00D2);
-//         $display("----- Check write FULL data in FIFO -----");
-//         reset();
-//         apb_wr(4'hF, BAUDDIV, BAUD_19200);
-//         apb_wr(4'hF, CONTROL, 16'h0004);
-//         receive_rx(1, 1'b1, 8'hD2);
-//         receive_rx(1, 1'b0, 8'h19);
-//         receive_rx(1, 1'b0, 8'hA7);
-//         receive_rx(1, 1'b1, 8'h3C);
-//         read_data_rx(2'b01, 16'h00D2);
-//         read_data_rx(2'b01, 16'h0019);
-//         read_data_rx(2'b01, 16'h00A7);
-//         read_data_rx(2'b01, 16'h003C);
+        $display("------------- Receive data with Odd parity --------------");
+        $display("----- Alternating Write-Read in Receive_FIFO -----");
+        reset();
+        apb_wr(4'hF, BAUDDIV, BAUD_115200);
+        apb_wr(4'hF, CONTROL, 16'h0004);
+        receive_rx(1, 1'b1, 8'h3C);
+        read_data_rx(2'b01, 16'h003C);
+        receive_rx(1, 1'b0, 8'hA7);
+        read_data_rx(2'b01, 16'h00A7);
+        receive_rx(1, 1'b0, 8'h19);
+        read_data_rx(2'b01, 16'h0019);
+        receive_rx(1, 1'b1, 8'hD2);
+        read_data_rx(2'b01, 16'h00D2);
+        $display("----- Check write FULL data in FIFO -----");
+        reset();
+        apb_wr(4'hF, BAUDDIV, BAUD_19200);
+        apb_wr(4'hF, CONTROL, 16'h0004);
+        receive_rx(1, 1'b1, 8'hD2);
+        receive_rx(1, 1'b0, 8'h19);
+        receive_rx(1, 1'b0, 8'hA7);
+        receive_rx(1, 1'b1, 8'h3C);
+        read_data_rx(2'b01, 16'h00D2);
+        read_data_rx(2'b01, 16'h0019);
+        read_data_rx(2'b01, 16'h00A7);
+        read_data_rx(2'b01, 16'h003C);
         
-//         $display("------------- Receive data with Even parity -------------");
-//         $display("----- Alternating Write-Read in Receive_FIFO -----");
-//         reset();
-//         apb_wr(4'hF, BAUDDIV, BAUD_115200);
-//         apb_wr(4'hF, CONTROL, 16'h000C);
-//         receive_rx(1, 1'b0, 8'h3C);
-//         read_data_rx(2'b11, 16'h003C);
-//         receive_rx(1, 1'b1, 8'hA7);
-//         read_data_rx(2'b11, 16'h00A7);
-//         receive_rx(1, 1'b1, 8'h19);
-//         read_data_rx(2'b11, 16'h0019);
-//         receive_rx(1, 1'b0, 8'hD2);
-//         read_data_rx(2'b11, 16'h00D2);
-//         $display("----- Check write FULL data in FIFO -----");
-//         reset();
-//         apb_wr(4'hF, BAUDDIV, BAUD_19200);
-//         apb_wr(4'hF, CONTROL, 16'h000C);
-//         receive_rx(1, 1'b0, 8'hD2);
-//         receive_rx(1, 1'b1, 8'h19);
-//         receive_rx(1, 1'b1, 8'hA7);
-//         receive_rx(1, 1'b0, 8'h3C);
-//         read_data_rx(2'b11, 16'h00D2);
-//         read_data_rx(2'b11, 16'h0019);
-//         read_data_rx(2'b11, 16'h00A7);
-//         read_data_rx(2'b11, 16'h003C);
+        $display("------------- Receive data with Even parity -------------");
+        $display("----- Alternating Write-Read in Receive_FIFO -----");
+        reset();
+        apb_wr(4'hF, BAUDDIV, BAUD_115200);
+        apb_wr(4'hF, CONTROL, 16'h000C);
+        receive_rx(1, 1'b0, 8'h3C);
+        read_data_rx(2'b11, 16'h003C);
+        receive_rx(1, 1'b1, 8'hA7);
+        read_data_rx(2'b11, 16'h00A7);
+        receive_rx(1, 1'b1, 8'h19);
+        read_data_rx(2'b11, 16'h0019);
+        receive_rx(1, 1'b0, 8'hD2);
+        read_data_rx(2'b11, 16'h00D2);
+        $display("----- Check write FULL data in FIFO -----");
+        reset();
+        apb_wr(4'hF, BAUDDIV, BAUD_19200);
+        apb_wr(4'hF, CONTROL, 16'h000C);
+        receive_rx(1, 1'b0, 8'hD2);
+        receive_rx(1, 1'b1, 8'h19);
+        receive_rx(1, 1'b1, 8'hA7);
+        receive_rx(1, 1'b0, 8'h3C);
+        read_data_rx(2'b11, 16'h00D2);
+        read_data_rx(2'b11, 16'h0019);
+        read_data_rx(2'b11, 16'h00A7);
+        read_data_rx(2'b11, 16'h003C);
 
 // TEST SUMMARY
         $display("\n========  Test Summary ========");
